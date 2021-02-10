@@ -1,0 +1,1 @@
+# polandball-flag-mapping
