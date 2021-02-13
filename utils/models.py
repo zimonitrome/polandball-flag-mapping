@@ -3,8 +3,8 @@ import torch.nn as nn
 from torch.nn import init
 import numpy as np
 from torchvision import models
-import antialiased_cnns
 
+# GMM module code from https://github.com/sergeywong/cp-vton/blob/master/networks.py
 
 def weights_init_normal(m):
     classname = m.__class__.__name__

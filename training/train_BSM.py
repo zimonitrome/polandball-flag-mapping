@@ -1,34 +1,35 @@
 from pathlib import Path
-# import sys
-# sys.path.insert(0, Path.cwd().parent) 
-
 from datetime import datetime
 from itertools import count
-from utils.models import VGGContentLossMultiLayer
-from utils.ball_flag_dataset_BSM import BallFlagDatasetBSM
 import numpy as np
+from copy import deepcopy
+from tqdm import tqdm
+
+import torch
+from torch import nn
 from torch.utils.data.dataloader import DataLoader
 from torch.utils.data.dataset import random_split
 from torch.utils.tensorboard.writer import SummaryWriter
 from torch.optim import AdamW
-from tqdm import tqdm
-from torch import nn
-import torch
 import segmentation_models_pytorch as smp
-from utils import unnormalize
-from copy import deepcopy
+
+import repackage
+repackage.up()
+from utils.helpers import unnormalize
+from utils.models import VGGContentLossMultiLayer
+from utils.ball_flag_dataset_BSM import BallFlagDatasetBSM
 
 if __name__ == '__main__':
-    torch.manual_seed(2354)
+    torch.manual_seed(1337)
 
     lr = 1e-4
     wd = 1e-4
     betas = (.5, .999)
-    bs = 32
-    test_percentage = 0.005
-    log_interval = 100
-    save_interval = 2000
-    note = "_V14_INIT_2"
+    bs = 8
+    test_percentage = 0.2
+    test_interval = 10  # Every n:th batch
+    save_interval = 100 # Every n:th batch
+    note = "lr=1e-4"    # Tag the log files
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -38,7 +39,7 @@ if __name__ == '__main__':
     def critereon(input, output, target):
         return VGG_loss(output, target) + L2_loss(output, target) + L1_loss(output, input)
 
-    black_flags = open("black_flags.txt", encoding="utf-8").read().splitlines()
+    black_flags = open("./data/black_flags.txt", encoding="utf-8").read().splitlines()
     dataset = BallFlagDatasetBSM("./data", exclude_countries=black_flags, use_augmentation=True)
     test_len = int(len(dataset)*test_percentage)
     train_len = len(dataset)-test_len
@@ -48,6 +49,7 @@ if __name__ == '__main__':
         train_dataset, bs, shuffle=True, pin_memory=True, drop_last=True, num_workers=1)
     test_dataloader = DataLoader(
         test_dataset, bs, shuffle=False, pin_memory=True, drop_last=True, num_workers=0)
+    assert len(test_dataloader) > 0, "too few samples"
     # Weird code but this is how it has to be done
     # in order to set augmentation on/off for test/train.
     test_dataset.dataset = deepcopy(test_dataset.dataset)
@@ -66,7 +68,7 @@ if __name__ == '__main__':
     optimizer_G = AdamW(G.parameters(), lr=lr,
                         betas=betas, weight_decay=wd)
 
-    run_id = "S2_" + datetime.today().strftime('%Y-%m-%d-%H.%M.%S') + note
+    run_id = '_'.join(["BSM", note, datetime.today().strftime('%Y-%m-%d-%H.%M.%S')])
 
     saved_e = 0
     saved_i = 0
@@ -75,15 +77,15 @@ if __name__ == '__main__':
     first_run = True
 
     # Loading previous progress
-    saved_state = torch.load(
-        r"checkpoints\S2_2020-12-09-13.36.28_V14_INIT_2\e2_gs4000.pth")
-    G.load_state_dict(saved_state["G"])
-    optimizer_G.load_state_dict(saved_state["optimizer_G"])
-    # run_id = saved_state["run_id"]
-    saved_e = saved_state["e"]
-    saved_i = saved_state["i"]
+    # saved_state = torch.load(
+    #     r"checkpoints\S2_2020-12-09-13.36.28_V14_INIT_2\e2_gs4000.pth")
+    # G.load_state_dict(saved_state["G"])
+    # optimizer_G.load_state_dict(saved_state["optimizer_G"])
+    # # run_id = saved_state["run_id"]
+    # saved_e = saved_state["e"]
+    # saved_i = saved_state["i"]
     
-    logger = SummaryWriter(f"./logs/{run_id}")
+    logger = SummaryWriter(f"./training/logs/{run_id}")
 
     for e in count(saved_e):
         running_loss = {
@@ -129,7 +131,7 @@ if __name__ == '__main__':
             #            Log and test             #
             #######################################
 
-            if global_step % log_interval == 0:
+            if global_step % test_interval == 0:
                 for key, value in running_loss.items():
                     logger.add_scalar(
                         f"train/{key}", np.mean(value), global_step)
@@ -175,7 +177,7 @@ if __name__ == '__main__':
                     first_run = False
 
             if global_step % save_interval == 0:
-                output_path = Path(f"./checkpoints/{run_id}/e{e}_gs{global_step}.pth")
+                output_path = Path(f"./training/checkpoints/{run_id}/E{e}_L{loss_G.item()}.pth")
                 output_path.parent.mkdir(parents=True, exist_ok=True)
                 torch.save({
                     "G": G.state_dict(),

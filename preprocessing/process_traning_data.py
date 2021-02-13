@@ -9,8 +9,8 @@ from tqdm import tqdm
 
 img_size = (256, 256)
 data_folder = Path(r"/data")
-balls_folder = data_folder / "original_balls"
-flags_folder = data_folder / "original_flags"
+balls_folder = data_folder / "balls"
+flags_folder = data_folder / "flags"
 
 ##########################################################
 #################### Helper functions ####################

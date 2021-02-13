@@ -1,12 +1,14 @@
-from process_traning_data import fit_resize, get_black_mask, resize_and_pad_ball
-from utils import quantize_pil_image, unnormalize
 from PIL import Image, ImageDraw
-from model import GMM
+from copy import copy
+
 import torch
-import segmentation_models_pytorch as smp
 import torchvision.transforms.functional as TF
 import torch.nn.functional as F
-from copy import copy
+import segmentation_models_pytorch as smp
+
+from preprocessing.process_traning_data_BSM import fit_resize, get_black_mask, resize_and_pad_ball
+from utils.helpers import quantize_pil_image, unnormalize
+from utils.models import GMM
 
 def predict(
         outlines, 

@@ -1,24 +1,25 @@
 from pathlib import Path
-import sys
-sys.path.insert(0, Path.cwd())
 from tqdm import tqdm
-from utils.models import GMM
-from torch.utils.data.dataloader import DataLoader
-from utils.ball_flag_dataset_GMM import BallFlagDatasetGMM
+
 import torch
 import torch.nn.functional as F
 import torchvision.transforms.functional as TF
+from torch.utils.data.dataloader import DataLoader
+
+import repackage
+repackage.up()
+from utils.models import GMM
+from utils.ball_flag_dataset_GMM import BallFlagDatasetGMM
 
 
 if __name__ == '__main__':
     bs = 128
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    # device = torch.device("cpu")
 
     model = GMM(256, 256, use_cuda=(str(device) == "cuda"))
     model.load_state_dict(torch.load(
-        r"checkpoints\S1_L2ONLY_2020-12-01-14.33.04\e10_l0.09427.pth"))
+        r"training\checkpoints\GMM_P2_lr=1e-4_2021-02-13-16.59.17\E00025_L0.05302.pth"))
     model.to(device)
     model.eval()
 

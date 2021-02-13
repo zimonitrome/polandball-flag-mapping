@@ -1,26 +1,26 @@
-from ast import parse
-from utils import quantize_pil_image, unnormalize
 from PIL import Image
-from torch.utils.data.dataloader import DataLoader
-from model import GMM
-import torch
-from ball_flag_dataset import BallFlagDataset
-import segmentation_models_pytorch as smp
-from pathlib import Path
 from tqdm import tqdm
+import torch
+from pathlib import Path
+
+from torch.utils.data.dataloader import DataLoader
+import segmentation_models_pytorch as smp
 import torchvision.transforms.functional as TF
 import torch.nn.functional as F
 
+from utils.helpers import quantize_pil_image, unnormalize
+from utils.models import GMM
+from utils.ball_flag_dataset_BSM import BallFlagDatasetBSM
+
 use_cuda = True
-input_folder = Path(
-    r"prediction_FID")
+input_folder = Path(r"prediction_FID")
 img_size = (256, 256)
 bs = 8
 quantize_thresh = 0.01
 use_first_model = True
 use_second_model = True
 use_quantization = True
-note = "_manylosses" #+ str(quantize_thresh)
+note = "mediumquant"
 
 device = torch.device("cuda" if torch.cuda.is_available()
                       and use_cuda else "cpu")
@@ -35,7 +35,7 @@ GMM_model = GMM_model.to(device).eval()
 M2_model = M2_model.to(device).eval()
 
 # Set up data
-dataset = BallFlagDataset(
+dataset = BallFlagDatasetBSM(
     input_folder, use_augmentation=False, img_size=img_size)
 dataloader = DataLoader(dataset, bs, shuffle=False, pin_memory=True)
 
@@ -69,7 +69,7 @@ for inputs in tqdm(dataloader):
     # Add to data structure
     for cnam, outp, outl, mask, fnam in zip(country_name, output, outline, ball_mask, file_name):
         image = TF.to_pil_image(unnormalize(outp))
-        flag = Image.open(input_folder / "original_flags" / f"{cnam}.png").convert("RGB")
+        flag = Image.open(input_folder / "flags" / f"{cnam}.png").convert("RGB")
 
         # Quantize
         if use_quantization:
