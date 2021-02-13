@@ -16,7 +16,7 @@ The premise for this project is to automatically texturize Polandball outlines w
 
 3. Run the first pre-processing from the main directory: 
     ```ps
-    python .\preprocessing\process_traning_data.py
+    python ./preprocessing/process_traning_data.py
     ```
     This script can take some time but can be run in multiple instances. <br> Also consider not using 100% of the dataset.
 
@@ -26,9 +26,9 @@ The premise for this project is to automatically texturize Polandball outlines w
     ```
     Note that no CLI options are provided. Training parameters are set in each training file.
 
-    The trained model will be saved in `./training/checkpoints/GMM_P1_***/***.pt`.
+    The trained model will be saved in `./training/checkpoints/GMM_P1_***/***.pth`.
 
-5. Provide the path for the trained GMM_P1 model (above step) in `./training/train_GMM_phase2.py` line XX.
+5. Move the trained model to `main_weights` and rename it to `GMM.pth`.
 
     Train the GMM in phase 2:
     ```ps
@@ -42,7 +42,14 @@ The premise for this project is to automatically texturize Polandball outlines w
 
 7. Train the BSM:
     ```ps
-    python .\training\train_BSM.py
+    python ./training/train_BSM.py
     ```
 
-8. Done! Make note of where your saved model (`.pt`) files are stored for use in inference.
+8. Done! Make note of where your saved model (`.pth`) files are stored for use in inference.
+
+
+## Inference
+
+To try the model, please refer to `inference_demo.ipynb`.
+
+The pre-trained weights `./main_weights/GMM.pth` and `./main_weights/BSM.pth` must exist (will soon be published!).

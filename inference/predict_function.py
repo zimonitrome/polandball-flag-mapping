@@ -6,7 +6,7 @@ import torchvision.transforms.functional as TF
 import torch.nn.functional as F
 import segmentation_models_pytorch as smp
 
-from preprocessing.process_traning_data_BSM import fit_resize, get_black_mask, resize_and_pad_ball
+from preprocessing.process_traning_data import fit_resize, get_black_mask, resize_and_pad_ball
 from utils.helpers import quantize_pil_image, unnormalize
 from utils.models import GMM
 
@@ -40,10 +40,10 @@ def predict(
 
     # Set up models
     GMM_model = GMM(*img_size, use_cuda=use_cuda)
-    GMM_model.load_state_dict(torch.load(r"//MODEL.pth"))
+    GMM_model.load_state_dict(torch.load(r"../main_weights/GMM.pth"))
     M2_model = smp.Unet(encoder_name="resnet34", encoder_weights="imagenet", decoder_use_batchnorm=True,
                         decoder_attention_type="scse", in_channels=4, classes=3, activation=torch.nn.Tanh)
-    M2_model.load_state_dict(torch.load(r"//MODEL.pth")["G"])
+    M2_model.load_state_dict(torch.load(r"../main_weights/BSM.pth")["G"])
     GMM_model = GMM_model.to(device).eval()
     M2_model = M2_model.to(device).eval()
 

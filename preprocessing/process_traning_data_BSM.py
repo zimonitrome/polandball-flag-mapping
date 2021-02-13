@@ -18,8 +18,7 @@ if __name__ == '__main__':
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     model = GMM(256, 256, use_cuda=(str(device) == "cuda"))
-    model.load_state_dict(torch.load(
-        r"training\checkpoints\GMM_P2_lr=1e-4_2021-02-13-16.59.17\E00025_L0.05302.pth"))
+    model.load_state_dict(torch.load(r"../main_weights/GMM.pth"))
     model.to(device)
     model.eval()
 
