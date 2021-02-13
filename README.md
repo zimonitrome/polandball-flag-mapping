@@ -2,11 +2,9 @@
 
 The premise for this project is to automatically texturize Polandball outlines with any arbitrary flag.
 
-<!-- ![](_readme_images\model_overview.svg "Model overview") -->
-
-<div style="text-align:center">
-    <img src="_readme_images\model_overview.svg" alt="drawing" width="200" />
-</div>
+<p align="center">
+    <img src="_readme_images\model_overview.svg" alt="drawing" width="400" />
+</p>
 
 ## Training
 
