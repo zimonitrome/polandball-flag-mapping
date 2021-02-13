@@ -3,7 +3,7 @@
 The premise for this project is to automatically texturize Polandball outlines with any arbitrary flag.
 
 <p align="center">
-    <img src="_readme_images\model_overview.svg" alt="drawing" width="400" />
+    <img src="_readme_images\model_overview.svg" width="400" />
 </p>
 
 ## Training
@@ -51,3 +51,15 @@ The premise for this project is to automatically texturize Polandball outlines w
 To try the model, please refer to `inference_demo.ipynb`.
 
 The pre-trained weights `./main_weights/GMM.pth` and `./main_weights/BSM.pth` must exist (will soon be published!).
+
+## Examples
+
+
+<img src="_readme_images\architecture.svg" width="100%" />
+<p align="center">Architecture of the two models.</p>
+<br>
+<img src="_readme_images\balls_grid.svg" width="100%" />
+<p align="center">Inputs and outputs using different settings.</p>
+<br>
+<img src="_readme_images\FID_ACC_bar.svg" width="100%" />
+<p align="center">Performance for each different set of settings.</p>
