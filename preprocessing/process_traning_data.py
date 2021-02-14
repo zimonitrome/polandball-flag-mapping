@@ -7,11 +7,6 @@ from scipy.signal.signaltools import convolve2d
 from scipy.spatial.kdtree import KDTree
 from tqdm import tqdm
 
-img_size = (256, 256)
-data_folder = Path(r"/data")
-balls_folder = data_folder / "balls"
-flags_folder = data_folder / "flags"
-
 ##########################################################
 #################### Helper functions ####################
 ##########################################################
@@ -77,6 +72,10 @@ def nearest_neighbor_fill(ball, mask):
 
 print("OBS: This script can take some time to run, but can be run multiple instances at the same time.")
 
+img_size = (256, 256)
+data_folder = Path(r"./data")
+balls_folder = data_folder / "balls"
+flags_folder = data_folder / "flags"
 countries = [n.name for n in balls_folder.glob("*")]
 
 flag_rgb_path = data_folder / "processed_flags_rgb"
