@@ -6,6 +6,16 @@ The premise for this project is to automatically texturize Polandball outlines w
     <img src="_readme_images\model_overview.svg" width="400" />
 </p>
 
+## Dependencies
+
+This project has only been tested using Anaconda environments. Packages can probably be installed in vanilla Python as well.
+
+Install the `polandball_mapping` environment through `environment.yml`:
+
+```ps
+conda env create -f environment.yml
+```
+
 ## Training
 
 1. Download the dataset from https://www.kaggle.com/zimonitrome/polandball-characters

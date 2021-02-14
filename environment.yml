@@ -1,0 +1,14 @@
+name: polandball_mapping
+dependencies:
+  - scipy
+  - pytorch::pytorch
+  - pytorch::torchvision
+  - cudatoolkit=11.0
+  - tqdm
+  - tensorboard
+  - conda-forge::repackage
+  - ipykernel
+  - jupyter
+  - pip
+  - pip:
+    - segmentation_models_pytorch
