@@ -73,3 +73,16 @@ The pre-trained weights `./main_weights/GMM.pth` and `./main_weights/BSM.pth` mu
 <br>
 <img src="_readme_images\FID_ACC_bar.svg" width="100%" />
 <p align="center">Performance for each different set of settings.</p>
+
+## Cite
+
+```
+@inproceedings{arvidsson2021texture,
+  title={Texture Mapping of Flags onto Polandball Characters using Convolutional Neural Nets},
+  author={Arvidsson, Simon and Gabrielsson, Patrick and Johansson, Ulf},
+  booktitle={2021 International Joint Conference on Neural Networks (IJCNN)},
+  pages={1--7},
+  year={2021},
+  organization={IEEE}
+}
+```
